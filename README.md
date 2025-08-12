@@ -43,9 +43,17 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
   - Online status tracking
   - Comprehensive unit tests (12 tests passing)
 
+- **Task 2.2**: Registration API with email verification
+  - RegisterController with comprehensive validation
+  - EmailVerificationService with dual verification methods
+  - 6-digit code AND verification link support
+  - Rate limiting and security measures
+  - Queued email notifications via SMTP2GO
+  - Comprehensive test suite (23 tests passing)
+  - API endpoints: `/api/auth/register`, `/api/auth/verify-email`, `/api/auth/resend-verification`
+
 ### 🔄 In Progress
 
-- **Task 2.2**: Registration API with email verification
 - **Task 2.3**: Login/logout API endpoints
 - **Task 3**: Frontend authentication components
 - **Task 4**: Database schema for chat system
@@ -127,7 +135,9 @@ php artisan test
 
 Current test coverage:
 - **User Model**: 12 tests passing
-- **Authentication**: Coming soon
+- **Registration API**: 12 feature tests passing
+- **Email Verification Service**: 11 unit tests passing
+- **Total**: 37 tests passing
 - **Chat Features**: Coming soon
 
 ## 📁 Project Structure
@@ -136,7 +146,13 @@ Current test coverage:
 ├── app/
 │   ├── Models/
 │   │   └── User.php              # User model with chat features
-│   └── Http/Controllers/         # API controllers
+│   ├── Http/Controllers/
+│   │   └── Auth/
+│   │       └── RegisterController.php  # Registration API
+│   ├── Services/
+│   │   └── EmailVerificationService.php # Email verification logic
+│   └── Notifications/
+│       └── EmailVerificationNotification.php # Email templates
 ├── database/
 │   ├── migrations/               # Database schema
 │   └── factories/                # Model factories for testing
