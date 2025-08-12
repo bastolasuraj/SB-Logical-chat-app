@@ -3,11 +3,13 @@
 ## After Each Task Completion:
 
 ### 1. Stage Changes
+
 ```bash
 git add .
 ```
 
 ### 2. Commit with Structured Message
+
 ```bash
 git commit -m "✅ Task [X.X] Complete: [Brief Description]
 
@@ -33,6 +35,7 @@ Technical Notes:
 ```
 
 ### 3. Push to GitHub
+
 ```bash
 git push origin main
 ```
@@ -59,6 +62,7 @@ Notes:
 ## Example Commit Messages:
 
 ### Task 2.2 Example:
+
 ```
 ✅ Task 2.2 Complete: Registration API with Email Verification
 
@@ -88,7 +92,9 @@ Technical Notes:
 ```
 
 ## Current Repository Status:
-- Repository: [To be created on GitHub]
-- Branch: main
-- Last Commit: Initial commit with Tasks 1 and 2.1
-- Next: Connect to GitHub remote
+
+-   Repository: https://github.com/bastolasuraj/SB-Logical-chat-app.git
+-   Branch: main
+-   Last Commit: README.md documentation
+-   Status: ✅ Connected and uploaded to GitHub
+-   Next: Continue with Task 2.2

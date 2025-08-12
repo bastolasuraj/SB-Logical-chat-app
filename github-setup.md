@@ -3,15 +3,12 @@
 ## Steps to connect to GitHub:
 
 1. Create a new repository on GitHub.com
-2. Copy the repository URL (e.g., https://github.com/yourusername/laravel-vue-chat-app.git)
-3. Run these commands in the chat-app directory:
+2. ✅ Repository created: https://github.com/bastolasuraj/SB-Logical-chat-app.git
+3. ✅ Connected and uploaded successfully!
 
 ```bash
-# Add the remote repository
-git remote add origin https://github.com/yourusername/laravel-vue-chat-app.git
-
-# Push the initial commit
-git branch -M main
+# Commands that were executed:
+git remote set-url origin https://github.com/bastolasuraj/SB-Logical-chat-app.git
 git push -u origin main
 ```
 
