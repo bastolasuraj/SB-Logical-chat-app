@@ -49,12 +49,22 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
   - 6-digit code AND verification link support
   - Rate limiting and security measures
   - Queued email notifications via SMTP2GO
-  - Comprehensive test suite (23 tests passing)
+  - Comprehensive test suite (12 tests passing)
   - API endpoints: `/api/auth/register`, `/api/auth/verify-email`, `/api/auth/resend-verification`
 
-### 🔄 In Progress
-
 - **Task 2.3**: Login/logout API endpoints
+  - LoginController with secure authentication logic
+  - Laravel Sanctum API token authentication
+  - Rate limiting for login attempts (5 attempts per email/IP)
+  - Email verification requirement for login
+  - Session management and token handling
+  - Multiple device logout support
+  - User profile endpoint with online status
+  - EnsureEmailIsVerified middleware for protected routes
+  - Comprehensive test suite (20 tests passing)
+  - API endpoints: `/api/auth/login`, `/api/auth/logout`, `/api/auth/logout-all`, `/api/auth/me`
+
+### 🔄 In Progress
 - **Task 3**: Frontend authentication components
 - **Task 4**: Database schema for chat system
 - **Task 5**: Friend management system
@@ -126,6 +136,148 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
    php artisan reverb:start
    ```
 
+## 📚 API Documentation
+
+### Authentication Endpoints
+
+#### Registration
+```http
+POST /api/auth/register
+Content-Type: application/json
+
+{
+  "name": "John Doe",
+  "email": "john@example.com",
+  "password": "password123",
+  "password_confirmation": "password123"
+}
+```
+
+**Response (201):**
+```json
+{
+  "message": "Registration successful. Please check your email for verification.",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "email_verified_at": null
+  }
+}
+```
+
+#### Email Verification
+```http
+POST /api/auth/verify-email
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "code": "123456"
+}
+```
+*OR*
+```json
+{
+  "email": "john@example.com",
+  "token": "verification-token-here"
+}
+```
+
+#### Login
+```http
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "email": "john@example.com",
+  "password": "password123"
+}
+```
+
+**Response (200):**
+```json
+{
+  "message": "Login successful",
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "email_verified_at": "2024-01-01T00:00:00.000000Z",
+    "avatar_url": "https://www.gravatar.com/avatar/...",
+    "last_seen_at": "2024-01-01T00:00:00.000000Z"
+  },
+  "token": "1|abc123..."
+}
+```
+
+#### Logout
+```http
+POST /api/auth/logout
+Authorization: Bearer {token}
+```
+
+#### Logout from All Devices
+```http
+POST /api/auth/logout-all
+Authorization: Bearer {token}
+```
+
+#### Get User Profile
+```http
+GET /api/auth/me
+Authorization: Bearer {token}
+```
+
+**Response (200):**
+```json
+{
+  "user": {
+    "id": 1,
+    "name": "John Doe",
+    "email": "john@example.com",
+    "email_verified_at": "2024-01-01T00:00:00.000000Z",
+    "avatar_url": "https://www.gravatar.com/avatar/...",
+    "last_seen_at": "2024-01-01T00:00:00.000000Z",
+    "is_online": true
+  }
+}
+```
+
+### Error Responses
+
+**Validation Error (422):**
+```json
+{
+  "message": "Validation failed",
+  "errors": {
+    "email": ["The email field is required."]
+  }
+}
+```
+
+**Authentication Error (401):**
+```json
+{
+  "message": "Invalid credentials"
+}
+```
+
+**Email Not Verified (403):**
+```json
+{
+  "message": "Email not verified. Please verify your email before logging in.",
+  "requires_verification": true
+}
+```
+
+**Rate Limited (429):**
+```json
+{
+  "message": "Too many login attempts. Please try again in 60 seconds."
+}
+```
+
 ## 🧪 Testing
 
 Run the test suite:
@@ -136,8 +288,9 @@ php artisan test
 Current test coverage:
 - **User Model**: 12 tests passing
 - **Registration API**: 12 feature tests passing
+- **Login/Logout API**: 20 feature tests passing
 - **Email Verification Service**: 11 unit tests passing
-- **Total**: 37 tests passing
+- **Total**: 55 tests passing
 - **Chat Features**: Coming soon
 
 ## 📁 Project Structure
