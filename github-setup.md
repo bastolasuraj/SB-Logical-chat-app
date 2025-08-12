@@ -31,6 +31,7 @@ git push origin main
 ```
 
 ## Current Status:
-- ✅ Git repository initialized
-- ✅ Initial commit created with Tasks 1 and 2.1 complete
-- 🔄 Ready to connect to GitHub remote repository
+
+-   ✅ Git repository initialized
+-   ✅ Initial commit created with Tasks 1 and 2.1 complete
+-   🔄 Ready to connect to GitHub remote repository
