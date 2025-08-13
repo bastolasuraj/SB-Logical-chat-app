@@ -24,6 +24,7 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
 - **TypeScript** - Type safety
 - **Tailwind CSS 4.0** - Styling
 - **Vite** - Build tool
+- **Pinia** - State management
 
 ## 📋 Development Progress
 
@@ -64,9 +65,65 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
   - Comprehensive test suite (20 tests passing)
   - API endpoints: `/api/auth/login`, `/api/auth/logout`, `/api/auth/logout-all`, `/api/auth/me`
 
+- **Task 3.1**: Create authentication views and forms
+  - LoginView component with form validation
+  - RegisterView component with TypeScript interfaces
+  - EmailVerificationView for code/link verification
+  - ForgotPasswordView for password recovery
+  - Form validation with error message display
+  - Responsive design with Tailwind CSS
+  - Router integration with navigation guards
+
+- **Task 3.2**: Implement authentication state management ✅ **COMPLETED**
+  - **Pinia Store Implementation**: Complete authentication state management using Pinia
+    - User state management with reactive properties
+    - Token management with localStorage persistence
+    - Loading states and error handling
+    - Computed properties for authentication status and email verification
+  - **API Service Layer**: Comprehensive API integration
+    - Axios-based service with interceptors
+    - Automatic token attachment to requests
+    - Error handling and response transformation
+    - Support for all authentication endpoints
+  - **Route Guards**: Navigation protection and flow control
+    - Protected routes requiring authentication
+    - Guest-only routes for unauthenticated users
+    - Email verification enforcement
+    - Automatic redirects based on authentication state
+  - **State Persistence**: Seamless user experience
+    - Token persistence in localStorage
+    - Automatic authentication restoration on app load
+    - Graceful handling of invalid/expired tokens
+  - **Comprehensive Testing**: Full test coverage
+    - Unit tests for Pinia store (9 tests)
+    - Integration tests for authentication flow (6 tests)
+    - Route guard tests (7 tests)
+    - Component tests for authentication views (5 tests)
+    - Validation composable tests (7 tests)
+    - **Total: 34 tests passing**
+
+- **Task 4.1**: Database schema for chat system ✅ **COMPLETED**
+  - **Chats Table**: Core chat entity with support for private and group chats
+    - Primary key, type (private/group), optional name for groups
+    - Last message timestamp for sorting and performance
+    - Proper indexes on type and last_message_at fields
+  - **Messages Table**: Message storage with full relationship support
+    - Foreign keys to chats and users with cascade delete
+    - Content storage with message type support (text, image, file)
+    - Read status tracking with timestamp
+    - Performance indexes on chat_id, user_id, and created_at
+  - **Chat Participants Table**: Many-to-many relationship between users and chats
+    - Unique constraint preventing duplicate participants
+    - Join timestamp tracking for audit purposes
+    - Cascade delete for data integrity
+  - **Friendships Table**: User relationship management
+    - Requester/addressee relationship with status tracking
+    - Support for pending, accepted, and declined states
+    - Unique constraint preventing duplicate friend requests
+    - Comprehensive indexing for friend lookup performance
+
 ### 🔄 In Progress
-- **Task 3**: Frontend authentication components
-- **Task 4**: Database schema for chat system
+- **Task 4.2**: Eloquent models with relationships
 - **Task 5**: Friend management system
 - **Task 6**: Core messaging API
 - **Task 7**: WebSocket infrastructure
@@ -90,199 +147,66 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/SB-Logical-chat-app.git
-   cd SB-Logical-chat-app
+   git clone https://github.com/bastolasuraj/SB-Logical-Chat-App.git
+   cd SB-Logical-Chat-App
    ```
 
-2. **Install PHP dependencies**
+2. **Navigate to the chat-app directory**
+   ```bash
+   cd chat-app
+   ```
+
+3. **Install PHP dependencies**
    ```bash
    composer install
    ```
 
-3. **Install Node.js dependencies**
+4. **Install Node.js dependencies**
    ```bash
    npm install
    ```
 
-4. **Environment setup**
+5. **Environment setup**
    ```bash
    cp .env.example .env
    php artisan key:generate
    ```
 
-5. **Configure database**
+6. **Configure database**
    - Update `.env` with your database credentials
    - Update `.env` with your SMTP2GO credentials
 
-6. **Run migrations**
+7. **Run migrations**
    ```bash
    php artisan migrate
    ```
 
-7. **Build assets**
+8. **Build assets**
    ```bash
    npm run build
    ```
 
-8. **Start development servers**
+9. **Start development servers**
    ```bash
    # Laravel (Backend)
    php -S localhost:8093 -t public
-   
+
    # Vite (Frontend Development)
    npm run dev
-   
+
    # Laravel Reverb (WebSocket) - when needed
    php artisan reverb:start
    ```
-
-## 📚 API Documentation
-
-### Authentication Endpoints
-
-#### Registration
-```http
-POST /api/auth/register
-Content-Type: application/json
-
-{
-  "name": "John Doe",
-  "email": "john@example.com",
-  "password": "password123",
-  "password_confirmation": "password123"
-}
-```
-
-**Response (201):**
-```json
-{
-  "message": "Registration successful. Please check your email for verification.",
-  "user": {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "email_verified_at": null
-  }
-}
-```
-
-#### Email Verification
-```http
-POST /api/auth/verify-email
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "code": "123456"
-}
-```
-*OR*
-```json
-{
-  "email": "john@example.com",
-  "token": "verification-token-here"
-}
-```
-
-#### Login
-```http
-POST /api/auth/login
-Content-Type: application/json
-
-{
-  "email": "john@example.com",
-  "password": "password123"
-}
-```
-
-**Response (200):**
-```json
-{
-  "message": "Login successful",
-  "user": {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "email_verified_at": "2024-01-01T00:00:00.000000Z",
-    "avatar_url": "https://www.gravatar.com/avatar/...",
-    "last_seen_at": "2024-01-01T00:00:00.000000Z"
-  },
-  "token": "1|abc123..."
-}
-```
-
-#### Logout
-```http
-POST /api/auth/logout
-Authorization: Bearer {token}
-```
-
-#### Logout from All Devices
-```http
-POST /api/auth/logout-all
-Authorization: Bearer {token}
-```
-
-#### Get User Profile
-```http
-GET /api/auth/me
-Authorization: Bearer {token}
-```
-
-**Response (200):**
-```json
-{
-  "user": {
-    "id": 1,
-    "name": "John Doe",
-    "email": "john@example.com",
-    "email_verified_at": "2024-01-01T00:00:00.000000Z",
-    "avatar_url": "https://www.gravatar.com/avatar/...",
-    "last_seen_at": "2024-01-01T00:00:00.000000Z",
-    "is_online": true
-  }
-}
-```
-
-### Error Responses
-
-**Validation Error (422):**
-```json
-{
-  "message": "Validation failed",
-  "errors": {
-    "email": ["The email field is required."]
-  }
-}
-```
-
-**Authentication Error (401):**
-```json
-{
-  "message": "Invalid credentials"
-}
-```
-
-**Email Not Verified (403):**
-```json
-{
-  "message": "Email not verified. Please verify your email before logging in.",
-  "requires_verification": true
-}
-```
-
-**Rate Limited (429):**
-```json
-{
-  "message": "Too many login attempts. Please try again in 60 seconds."
-}
-```
 
 ## 🧪 Testing
 
 Run the test suite:
 ```bash
+# Backend tests
 php artisan test
+
+# Frontend tests
+npm test
 ```
 
 Current test coverage:
@@ -290,39 +214,184 @@ Current test coverage:
 - **Registration API**: 12 feature tests passing
 - **Login/Logout API**: 20 feature tests passing
 - **Email Verification Service**: 11 unit tests passing
-- **Total**: 55 tests passing
-- **Chat Features**: Coming soon
+- **Frontend Authentication**: 34 tests passing
+  - Pinia store tests: 9 tests
+  - Integration tests: 6 tests
+  - Route guard tests: 7 tests
+  - Component tests: 5 tests
+  - Validation tests: 7 tests
+- **Total**: 89+ tests passing
+
+## 🗄️ Database Schema
+
+### Core Tables
+
+#### Users Table (Extended)
+```sql
+users
+├── id (Primary Key)
+├── name (VARCHAR)
+├── email (UNIQUE VARCHAR)
+├── email_verified_at (TIMESTAMP, nullable)
+├── password (HASHED VARCHAR)
+├── avatar (VARCHAR, nullable)
+├── last_seen_at (TIMESTAMP, nullable)
+├── remember_token (VARCHAR, nullable)
+├── created_at (TIMESTAMP)
+└── updated_at (TIMESTAMP)
+```
+
+#### Chats Table
+```sql
+chats
+├── id (Primary Key)
+├── type (ENUM: 'private', 'group') DEFAULT 'private'
+├── name (VARCHAR, nullable) -- For group chats
+├── last_message_at (TIMESTAMP, nullable)
+├── created_at (TIMESTAMP)
+└── updated_at (TIMESTAMP)
+
+Indexes:
+- type (for filtering chat types)
+- last_message_at (for sorting by activity)
+```
+
+#### Messages Table
+```sql
+messages
+├── id (Primary Key)
+├── chat_id (Foreign Key → chats.id) CASCADE DELETE
+├── user_id (Foreign Key → users.id) CASCADE DELETE
+├── content (TEXT)
+├── message_type (ENUM: 'text', 'image', 'file') DEFAULT 'text'
+├── read_at (TIMESTAMP, nullable)
+├── created_at (TIMESTAMP)
+└── updated_at (TIMESTAMP)
+
+Indexes:
+- [chat_id, created_at] (for message history queries)
+- [user_id, created_at] (for user message queries)
+- read_at (for unread message counts)
+```
+
+#### Chat Participants Table
+```sql
+chat_participants
+├── id (Primary Key)
+├── chat_id (Foreign Key → chats.id) CASCADE DELETE
+├── user_id (Foreign Key → users.id) CASCADE DELETE
+├── joined_at (TIMESTAMP) DEFAULT CURRENT_TIMESTAMP
+├── created_at (TIMESTAMP)
+└── updated_at (TIMESTAMP)
+
+Constraints:
+- UNIQUE [chat_id, user_id] (prevent duplicate participants)
+
+Indexes:
+- chat_id (for finding chat participants)
+- user_id (for finding user's chats)
+```
+
+#### Friendships Table
+```sql
+friendships
+├── id (Primary Key)
+├── requester_id (Foreign Key → users.id) CASCADE DELETE
+├── addressee_id (Foreign Key → users.id) CASCADE DELETE
+├── status (ENUM: 'pending', 'accepted', 'declined') DEFAULT 'pending'
+├── created_at (TIMESTAMP)
+└── updated_at (TIMESTAMP)
+
+Constraints:
+- UNIQUE [requester_id, addressee_id] (prevent duplicate requests)
+
+Indexes:
+- requester_id (for outgoing friend requests)
+- addressee_id (for incoming friend requests)
+- status (for filtering by request status)
+- [requester_id, status] (for user's outgoing requests by status)
+- [addressee_id, status] (for user's incoming requests by status)
+```
+
+### Relationships
+
+#### User Model Relationships
+- **HasMany**: messages (user's sent messages)
+- **BelongsToMany**: chats (through chat_participants)
+- **HasMany**: sentFriendRequests (as requester)
+- **HasMany**: receivedFriendRequests (as addressee)
+
+#### Chat Model Relationships
+- **HasMany**: messages (chat's message history)
+- **BelongsToMany**: participants (users in the chat)
+- **HasOne**: lastMessage (most recent message)
+
+#### Message Model Relationships
+- **BelongsTo**: chat (parent chat)
+- **BelongsTo**: user (message sender)
+
+#### Friendship Model Relationships
+- **BelongsTo**: requester (user who sent request)
+- **BelongsTo**: addressee (user who received request)
+
+### Performance Considerations
+
+#### Indexing Strategy
+- **Chat Queries**: Indexed on `type` and `last_message_at` for efficient chat listing
+- **Message Queries**: Composite indexes on `[chat_id, created_at]` for message history
+- **Friend Queries**: Multiple indexes on friendship combinations for fast lookups
+- **User Queries**: Indexed on `last_seen_at` for online status queries
+
+#### Query Optimization
+- **Lazy Loading**: Message history loaded in chunks for performance
+- **Eager Loading**: Chat participants and last messages loaded efficiently
+- **Cascade Deletes**: Automatic cleanup of related records
+- **Unique Constraints**: Prevent duplicate data and improve query performance
 
 ## 📁 Project Structure
 
 ```
-├── app/
-│   ├── Models/
-│   │   └── User.php              # User model with chat features
-│   ├── Http/Controllers/
-│   │   └── Auth/
-│   │       └── RegisterController.php  # Registration API
-│   ├── Services/
-│   │   └── EmailVerificationService.php # Email verification logic
-│   └── Notifications/
-│       └── EmailVerificationNotification.php # Email templates
-├── database/
-│   ├── migrations/               # Database schema
-│   └── factories/                # Model factories for testing
-├── resources/
-│   ├── js/
-│   │   ├── App.vue              # Main Vue component
-│   │   ├── app.ts               # Vue.js entry point
-│   │   └── bootstrap.ts         # Laravel Echo setup
-│   └── views/
-│       └── app.blade.php        # SPA layout
-├── tests/
-│   ├── Unit/
-│   │   └── UserModelTest.php    # User model tests
-│   └── Feature/                 # Feature tests
-└── routes/
-    ├── web.php                  # Web routes
-    └── channels.php             # WebSocket channels
+├── chat-app/
+│   ├── app/
+│   │   ├── Models/
+│   │   │   └── User.php              # User model with chat features
+│   │   ├── Http/Controllers/
+│   │   │   └── Auth/
+│   │   │       └── RegisterController.php  # Registration API
+│   │   ├── Services/
+│   │   │   └── EmailVerificationService.php # Email verification logic
+│   │   └── Notifications/
+│   │       └── EmailVerificationNotification.php # Email templates
+│   ├── database/
+│   │   ├── migrations/               # Database schema
+│   │   └── factories/                # Model factories for testing
+│   ├── resources/
+│   │   ├── js/
+│   │   │   ├── stores/
+│   │   │   │   └── auth.ts          # Pinia authentication store
+│   │   │   ├── services/
+│   │   │   │   └── authApi.ts       # API service layer
+│   │   │   ├── router/
+│   │   │   │   └── index.ts         # Vue Router with guards
+│   │   │   ├── views/
+│   │   │   │   └── auth/            # Authentication components
+│   │   │   ├── types/
+│   │   │   │   └── auth.ts          # TypeScript interfaces
+│   │   │   ├── composables/
+│   │   │   │   └── useValidation.ts # Validation composable
+│   │   │   ├── tests/               # Frontend test suite
+│   │   │   ├── App.vue              # Main Vue component
+│   │   │   ├── app.ts               # Vue.js entry point
+│   │   │   └── bootstrap.ts         # Laravel Echo setup
+│   │   └── views/
+│   │       └── app.blade.php        # SPA layout
+│   ├── tests/
+│   │   ├── Unit/
+│   │   │   └── UserModelTest.php    # User model tests
+│   │   └── Feature/                 # Feature tests
+│   └── routes/
+│       ├── web.php                  # Web routes
+│       └── channels.php             # WebSocket channels
 ```
 
 ## 🔧 Configuration
@@ -346,6 +415,27 @@ REVERB_APP_KEY=your_app_key
 REVERB_APP_SECRET=your_app_secret
 ```
 
+## 🎯 Authentication State Management Features
+
+### Pinia Store Features
+- **Reactive State**: User, token, loading, and error states
+- **Computed Properties**: Authentication status and email verification checks
+- **Actions**: Login, register, logout, email verification, and user fetching
+- **Persistence**: Automatic token storage and retrieval from localStorage
+- **Error Handling**: Comprehensive error management with user-friendly messages
+
+### API Service Features
+- **Axios Integration**: Configured HTTP client with interceptors
+- **Token Management**: Automatic token attachment and refresh handling
+- **Error Transformation**: Consistent error format across the application
+- **Type Safety**: Full TypeScript support with proper interfaces
+
+### Route Guard Features
+- **Authentication Protection**: Automatic redirection for unauthenticated users
+- **Email Verification Enforcement**: Ensures verified users access protected routes
+- **Guest Route Protection**: Prevents authenticated users from accessing login/register
+- **Seamless Navigation**: Smooth user experience with proper redirects
+
 ## 🤝 Contributing
 
 This is a learning project following a structured development approach with:
@@ -360,7 +450,7 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ## 🎯 Roadmap
 
-- [ ] Complete authentication system
+- [x] Complete authentication system with state management
 - [ ] Implement friend management
 - [ ] Build real-time chat interface
 - [ ] Add file sharing capabilities
@@ -371,4 +461,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 ---
 
-**Built with ❤️ using Laravel, Vue.js, and TypeScript**
+**Built with ❤️ using Laravel, Vue.js, TypeScript, and Pinia**
