@@ -1,14 +1,5 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { LoginCredentials, RegisterData, EmailVerificationData } from '../../types/auth';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
-import { authApi } from '../../services/authApi';
 
 // Mock axios
 const mockAxiosInstance = {

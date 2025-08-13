@@ -34,6 +34,12 @@ const routes = [
     meta: { requiresAuth: true }
   },
   {
+    path: '/friends',
+    name: 'friends',
+    component: () => import('../views/FriendsView.vue'),
+    meta: { requiresAuth: true }
+  },
+  {
     path: '/forgot-password',
     name: 'forgot-password',
     component: () => import('../views/auth/ForgotPasswordView.vue'),
