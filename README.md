@@ -122,8 +122,40 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
     - Unique constraint preventing duplicate friend requests
     - Comprehensive indexing for friend lookup performance
 
+- **Task 4.2**: Eloquent models with relationships ✅ **COMPLETED**
+  - **Chat Model**: Complete chat entity with comprehensive relationship management
+    - HasMany relationship to messages with proper ordering
+    - BelongsToMany relationship to participants through pivot table
+    - HasOne relationship to lastMessage for efficient queries
+    - Helper methods for private/group chat detection
+    - Unread message counting and marking as read functionality
+    - Scopes for user-specific queries and ordering by activity
+  - **Message Model**: Full-featured message entity with relationships and utilities
+    - BelongsTo relationships to both chat and user entities
+    - Read status tracking with automatic timestamp management
+    - Message type support (text, image, file) with helper methods
+    - Formatted content attribute for different message types
+    - Comprehensive scopes for filtering and querying messages
+    - Automatic chat last_message_at updating on message creation
+  - **Friendship Model**: Complete user relationship management system
+    - BelongsTo relationships to requester and addressee users
+    - Status management (pending, accepted, declined) with helper methods
+    - Bidirectional friendship detection and management
+    - Static methods for checking and retrieving friendships between users
+    - Comprehensive scopes for filtering by status and user involvement
+    - Helper methods for getting the other user in a friendship
+  - **Model Factories**: Complete factory implementations for all models
+    - ChatFactory with states for private/group chats and activity levels
+    - MessageFactory with states for read/unread and different message types
+    - FriendshipFactory with states for different friendship statuses
+    - All factories support relationship creation and realistic test data
+  - **Comprehensive Test Suite**: 40 unit tests covering all model functionality
+    - Chat model tests: 12 tests covering relationships and business logic
+    - Message model tests: 12 tests covering relationships and message handling
+    - Friendship model tests: 16 tests covering relationship management
+    - All tests passing with proper assertions and edge case coverage
+
 ### 🔄 In Progress
-- **Task 4.2**: Eloquent models with relationships
 - **Task 5**: Friend management system
 - **Task 6**: Core messaging API
 - **Task 7**: WebSocket infrastructure
