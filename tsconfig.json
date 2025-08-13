@@ -6,7 +6,8 @@
     "resources/**/*.vue"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "vendor"
   ],
   "compilerOptions": {
     "composite": true,
@@ -15,6 +16,8 @@
     "paths": {
       "@/*": ["./resources/js/*"]
     },
-    "types": ["vite/client"]
+    "types": [
+      "vite/client"
+    ]
   }
 }
