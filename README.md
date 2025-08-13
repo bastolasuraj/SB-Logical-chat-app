@@ -155,9 +155,131 @@ A real-time chat application built with Laravel, Vue.js, TypeScript, and WebSock
     - Friendship model tests: 16 tests covering relationship management
     - All tests passing with proper assertions and edge case coverage
 
+- **Task 5.1**: Friend search and request API ✅ **COMPLETED**
+  - **UserSearchController**: Comprehensive user discovery system
+    - Search functionality with name and email filtering
+    - Pagination support for large user bases
+    - Friend status integration (already friends, pending requests)
+    - Suggestions endpoint for friend recommendations
+    - Rate limiting and security measures
+  - **FriendController**: Complete friend management API
+    - Send, accept, decline, and cancel friend requests
+    - List friends and pending requests with pagination
+    - Remove friends functionality
+    - Comprehensive validation and authorization
+    - Status tracking and relationship management
+  - **API Endpoints**: RESTful friend management endpoints
+    - `/api/users/search` - Search for users
+    - `/api/users/suggestions` - Get friend suggestions
+    - `/api/friends` - List user's friends
+    - `/api/friends/pending` - List pending requests
+    - `/api/friends/request` - Send friend request
+    - `/api/friends/accept/{id}` - Accept request
+    - `/api/friends/decline/{id}` - Decline request
+    - `/api/friends/cancel/{id}` - Cancel sent request
+    - `/api/friends/remove/{id}` - Remove friend
+  - **Comprehensive Test Suite**: 22 feature tests covering all functionality
+    - User search tests: 8 tests covering search and suggestions
+    - Friend management tests: 14 tests covering all CRUD operations
+    - All tests passing with proper assertions and edge case coverage
+
+- **Task 5.2**: Friend management frontend components ✅ **COMPLETED**
+  - **FriendsView**: Main friend management interface
+    - Tabbed interface for friends, requests, and search
+    - Real-time friend status updates
+    - Responsive design with Tailwind CSS
+    - Loading states and error handling
+  - **UserSearch**: Advanced user search component
+    - Real-time search with debouncing
+    - Friend status indicators
+    - Send request functionality
+    - TypeScript interfaces for type safety
+  - **FriendRequests**: Request management component
+    - Separate tabs for sent and received requests
+    - Accept/decline functionality
+    - Cancel sent requests
+    - Real-time status updates
+  - **FriendsList**: Friends display component
+    - Online status indicators
+    - Remove friend functionality
+    - Start chat functionality
+    - Responsive grid layout
+  - **Pinia Store Integration**: Friend state management
+    - Friends list state with reactive updates
+    - Pending requests tracking
+    - Search results management
+    - API integration with error handling
+  - **Comprehensive Test Suite**: 18 component tests covering all functionality
+    - FriendsView tests: 6 tests covering main interface
+    - UserSearch tests: 5 tests covering search functionality
+    - FriendRequests tests: 4 tests covering request management
+    - FriendsList tests: 3 tests covering friends display
+    - All tests passing with proper assertions and user interactions
+
+- **Task 6.1**: Chat and message API endpoints ✅ **COMPLETED**
+  - **ChatController**: Complete chat management API
+    - List user's chats with participants and last messages
+    - Create private chats between users
+    - View specific chat details with authorization
+    - Mark all messages in chat as read
+    - Delete chats (group chats only)
+    - Duplicate chat prevention for private chats
+    - Comprehensive authorization and validation
+  - **MessageController**: Full-featured messaging API
+    - Get paginated messages for a chat
+    - Send new messages with validation
+    - Load older messages for lazy loading
+    - View, update, and delete specific messages
+    - Mark individual messages as read
+    - Message ownership validation
+    - Content sanitization and security
+  - **API Endpoints**: RESTful chat and messaging endpoints
+    - `/api/chats` - List user's chats (GET), Create new chat (POST)
+    - `/api/chats/{id}` - Get chat details (GET), Delete chat (DELETE)
+    - `/api/chats/{id}/mark-read` - Mark all messages as read (POST)
+    - `/api/chats/{id}/messages` - Get messages (GET), Send message (POST)
+    - `/api/chats/{id}/messages/older` - Load older messages (GET)
+    - `/api/chats/{id}/messages/{messageId}` - Message CRUD operations
+    - `/api/chats/{id}/messages/{messageId}/mark-read` - Mark message as read (POST)
+  - **Comprehensive Test Suite**: 22 feature tests covering all functionality
+    - Chat management tests: 10 tests covering chat operations
+    - Message management tests: 12 tests covering messaging functionality
+    - All tests passing with proper assertions and edge case coverage
+
+- **Task 6.2**: Message validation and storage ✅ **COMPLETED**
+  - **MessageService**: Comprehensive message handling service
+    - Advanced content validation with type-specific rules
+    - Content sanitization to prevent XSS attacks
+    - Spam detection with pattern matching
+    - Secure message storage with transaction support
+    - Read status tracking with timestamp management
+    - Message statistics and monitoring capabilities
+    - Comprehensive error handling and logging
+  - **Custom Request Classes**: Dedicated validation for message operations
+    - StoreMessageRequest with content normalization
+    - UpdateMessageRequest with sanitization
+    - Custom validation rules for different message types
+    - Line ending normalization and whitespace control
+    - Character limit enforcement (10,000 characters max)
+  - **Security Features**: Multi-layered protection against malicious content
+    - HTML tag stripping and encoding
+    - XSS prevention through content sanitization
+    - Spam pattern detection (repeated characters, multiple URLs)
+    - File reference validation for image/file messages
+    - Control character removal and normalization
+  - **Message Types Support**: Full support for different content types
+    - Text messages with advanced sanitization
+    - Image messages with URL validation
+    - File messages with reference validation
+    - Type-specific validation rules and sanitization
+  - **Comprehensive Test Suite**: 19 unit tests covering all functionality
+    - Message creation and validation: 8 tests
+    - Content sanitization and security: 4 tests
+    - Message operations (update, delete, read): 4 tests
+    - Message type validation: 3 tests
+    - All tests passing with proper assertions and edge case coverage
+
 ### 🔄 In Progress
-- **Task 5**: Friend management system
-- **Task 6**: Core messaging API
 - **Task 7**: WebSocket infrastructure
 - **Task 8**: Main chat interface
 - **Task 9**: Real-time messaging integration
@@ -252,7 +374,242 @@ Current test coverage:
   - Route guard tests: 7 tests
   - Component tests: 5 tests
   - Validation tests: 7 tests
-- **Total**: 89+ tests passing
+- **Database Models**: 40 unit tests passing
+- **Friend Management API**: 22 feature tests passing
+- **Friend Management Frontend**: 18 component tests passing
+- **Chat and Message API**: 22 feature tests passing
+- **Message Service**: 19 unit tests passing
+- **Total**: 178+ tests passing
+
+## 📡 API Documentation
+
+### Chat Management Endpoints
+
+#### Get User's Chats
+```http
+GET /api/chats
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "type": "private",
+      "name": null,
+      "participants": [
+        {
+          "id": 1,
+          "name": "John Doe",
+          "email": "john@example.com",
+          "avatar": "https://gravatar.com/avatar/...",
+          "last_seen_at": "2024-01-15T10:30:00Z"
+        }
+      ],
+      "last_message": {
+        "id": 5,
+        "content": "Hello there!",
+        "message_type": "text",
+        "created_at": "2024-01-15T10:25:00Z",
+        "user": {
+          "id": 2,
+          "name": "Jane Smith"
+        }
+      },
+      "last_message_at": "2024-01-15T10:25:00Z",
+      "unread_count": 2,
+      "other_participant": {
+        "id": 2,
+        "name": "Jane Smith",
+        "email": "jane@example.com"
+      }
+    }
+  ]
+}
+```
+
+#### Create New Chat
+```http
+POST /api/chats
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "user_id": 2,
+  "type": "private"
+}
+```
+
+#### Get Chat Details
+```http
+GET /api/chats/{chatId}
+Authorization: Bearer {token}
+```
+
+#### Mark Chat as Read
+```http
+POST /api/chats/{chatId}/mark-read
+Authorization: Bearer {token}
+```
+
+### Message Validation and Security
+
+The messaging system includes comprehensive validation and security features:
+
+#### Content Validation
+- **Length Limits**: Messages are limited to 10,000 characters
+- **Empty Content**: Messages cannot be empty or contain only whitespace
+- **Type Validation**: Supports text, image, and file message types
+- **Spam Detection**: Automatic detection of spam patterns including:
+  - Repeated characters (20+ consecutive)
+  - Multiple URLs in a single message
+  - Common spam phrases
+
+#### Content Sanitization
+- **XSS Prevention**: HTML tags are stripped and special characters encoded
+- **Line Ending Normalization**: All line endings converted to consistent format
+- **Whitespace Control**: Excessive whitespace normalized, consecutive newlines limited to 3
+- **Control Character Removal**: Null bytes and control characters removed
+
+#### Message Type Validation
+- **Text Messages**: Content sanitization and spam detection
+- **Image Messages**: URL validation or file reference validation
+- **File Messages**: URL validation or file path validation with extension checking
+
+### Message Management Endpoints
+
+#### Get Chat Messages
+```http
+GET /api/chats/{chatId}/messages?page=1&per_page=50
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    {
+      "id": 1,
+      "chat_id": 1,
+      "user_id": 2,
+      "content": "Hello there!",
+      "message_type": "text",
+      "read_at": null,
+      "created_at": "2024-01-15T10:25:00Z",
+      "updated_at": "2024-01-15T10:25:00Z",
+      "user": {
+        "id": 2,
+        "name": "Jane Smith",
+        "avatar": "https://gravatar.com/avatar/..."
+      }
+    }
+  ],
+  "pagination": {
+    "current_page": 1,
+    "last_page": 3,
+    "per_page": 50,
+    "total": 125,
+    "has_more_pages": true
+  }
+}
+```
+
+#### Send Message
+```http
+POST /api/chats/{chatId}/messages
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "content": "Hello there!",
+  "message_type": "text"
+}
+```
+
+#### Load Older Messages (Lazy Loading)
+```http
+GET /api/chats/{chatId}/messages/older?before_id=100&limit=50
+Authorization: Bearer {token}
+```
+
+**Response:**
+```json
+{
+  "success": true,
+  "data": [
+    // Array of messages older than the specified ID
+  ],
+  "has_more": true
+}
+```
+
+#### Update Message
+```http
+PUT /api/chats/{chatId}/messages/{messageId}
+Authorization: Bearer {token}
+Content-Type: application/json
+
+{
+  "content": "Updated message content"
+}
+```
+
+#### Delete Message
+```http
+DELETE /api/chats/{chatId}/messages/{messageId}
+Authorization: Bearer {token}
+```
+
+#### Mark Message as Read
+```http
+POST /api/chats/{chatId}/messages/{messageId}/mark-read
+Authorization: Bearer {token}
+```
+
+### Error Responses
+
+All endpoints return consistent error responses:
+
+```json
+{
+  "success": false,
+  "message": "Error description",
+  "errors": {
+    "field_name": ["Validation error message"]
+  }
+}
+```
+
+**Common HTTP Status Codes:**
+- `200` - Success
+- `201` - Created
+- `400` - Bad Request
+- `401` - Unauthorized
+- `403` - Forbidden
+- `404` - Not Found
+- `422` - Validation Error
+- `500` - Server Error
+
+### Authentication
+
+All API endpoints require authentication using Laravel Sanctum tokens:
+
+```http
+Authorization: Bearer {your_api_token}
+```
+
+Get your token by logging in through the `/api/auth/login` endpoint.
+
+### Rate Limiting
+
+API endpoints are rate limited to prevent abuse:
+- **General API**: 60 requests per minute per user
+- **Message sending**: 30 requests per minute per user
+- **Search endpoints**: 20 requests per minute per user
 
 ## 🗄️ Database Schema
 
