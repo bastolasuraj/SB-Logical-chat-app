@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import type { LoginCredentials, RegisterData, EmailVerificationData } from '../../types/auth';
 import { authApi } from '../../services/authApi';
 import { authApi } from '../../services/authApi';
@@ -10,19 +10,20 @@ import { authApi } from '../../services/authApi';
 import { authApi } from '../../services/authApi';
 import { authApi } from '../../services/authApi';
 
-// Mock the entire authApi module
-const mockAuthApi = {
-  login: vi.fn(),
-  register: vi.fn(),
-  verifyEmail: vi.fn(),
-  resendVerificationEmail: vi.fn(),
-  logout: vi.fn(),
-  getUser: vi.fn(),
-  forgotPassword: vi.fn(),
+// Mock axios
+const mockAxiosInstance = {
+  post: vi.fn(),
+  get: vi.fn(),
+  interceptors: {
+    request: { use: vi.fn() },
+    response: { use: vi.fn() }
+  }
 };
 
-vi.mock('../../services/authApi', () => ({
-  authApi: mockAuthApi,
+vi.mock('axios', () => ({
+  default: {
+    create: vi.fn(() => mockAxiosInstance)
+  }
 }));
 
 describe('Auth API Service', () => {
@@ -42,23 +43,25 @@ describe('Auth API Service', () => {
       };
 
       const mockResponse = {
-        user: {
-          id: 1,
-          name: 'Test User',
-          email: 'test@example.com',
-          email_verified_at: '2023-01-01T00:00:00.000Z'
-        },
-        token: 'test-token',
-        message: 'Login successful'
+        data: {
+          user: {
+            id: 1,
+            name: 'Test User',
+            email: 'test@example.com',
+            email_verified_at: '2023-01-01T00:00:00.000Z'
+          },
+          token: 'test-token',
+          message: 'Login successful'
+        }
       };
 
-      mockAuthApi.login.mockResolvedValue(mockResponse);
+      mockAxiosInstance.post.mockResolvedValue(mockResponse);
 
       const { authApi } = await import('../../services/authApi');
       const result = await authApi.login(credentials);
 
-      expect(mockAuthApi.login).toHaveBeenCalledWith(credentials);
-      expect(result).toEqual(mockResponse);
+      expect(mockAxiosInstance.post).toHaveBeenCalledWith('/login', credentials);
+      expect(result).toEqual(mockResponse.data);
     });
 
     it('should handle login error with validation errors', async () => {
@@ -68,18 +71,29 @@ describe('Auth API Service', () => {
       };
 
       const mockError = {
+        response: {
+          status: 422,
+          data: {
+            message: 'Validation failed',
+            errors: {
+              email: ['The email field must be a valid email address.'],
+              password: ['The password field is required.']
+            }
+          }
+        }
+      };
+
+      mockAxiosInstance.post.mockRejectedValue(mockError);
+
+      const { authApi } = await import('../../services/authApi');
+      await expect(authApi.login(credentials)).rejects.toEqual({
         message: 'Validation failed',
         status: 422,
         errors: {
           email: ['The email field must be a valid email address.'],
           password: ['The password field is required.']
         }
-      };
-
-      mockAuthApi.login.mockRejectedValue(mockError);
-
-      const { authApi } = await import('../../services/authApi');
-      await expect(authApi.login(credentials)).rejects.toEqual(mockError);
+      });
     });
 
     it('should handle login error with invalid credentials', async () => {
@@ -89,15 +103,22 @@ describe('Auth API Service', () => {
       };
 
       const mockError = {
+        response: {
+          status: 401,
+          data: {
+            message: 'Invalid credentials'
+          }
+        }
+      };
+
+      mockAxiosInstance.post.mockRejectedValue(mockError);
+
+      const { authApi } = await import('../../services/authApi');
+      await expect(authApi.login(credentials)).rejects.toEqual({
         message: 'Invalid credentials',
         status: 401,
         errors: {}
-      };
-
-      mockAuthApi.login.mockRejectedValue(mockError);
-
-      const { authApi } = await import('../../services/authApi');
-      await expect(authApi.login(credentials)).rejects.toEqual(mockError);
+      });
     });
   });
 
